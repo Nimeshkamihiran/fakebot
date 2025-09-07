@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Neno-XMD Bot Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: linear-gradient(135deg, #ff512f, #f09819); /* 🔥 Red → Orange */
+      --bg: #0a0a0f;
+      --glass: rgba(255, 255, 255, 0.05);
+      --text: #e0e0e0;
+      --muted: #8a8a8a;
+      --highlight: #ff944d; /* Neon Orange */
+      --radius: 18px;
+      --blur: 15px;
+      --transition: 0.3s ease;
+      --glow: 0 0 20px rgba(255, 90, 0, 0.6); /* Neon Glow */
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 80px 20px 120px;
+      color: var(--text);
+    }
+
+    /* Animated Background */
+    .background {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      background: radial-gradient(circle at 20% 20%, rgba(255,100,0,0.15), transparent 60%),
+                  radial-gradient(circle at 80% 80%, rgba(255,0,80,0.15), transparent 60%);
+      animation: pulse 10s infinite alternate;
+      z-index: -1;
+    }
+    @keyframes pulse {
+      0% { filter: hue-rotate(0deg); }
+      100% { filter: hue-rotate(360deg); }
+    }
+
+    /* Header */
+    .header {
+      position: fixed;
+      top:0;
+      left:0;
+      right:0;
+      display:flex;
+      justify-content: space-between;
+      align-items:center;
+      padding: 1rem 2rem;
+      background: var(--glass);
+      backdrop-filter: blur(var(--blur));
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      z-index: 100;
+    }
+    .logo-container {
+      display:flex;
+      align-items:center;
+      gap:1rem;
+    }
+    .logo-img {
+      height:45px;
+      width:45px;
+      border-radius:50%;
+      border:2px solid var(--highlight);
+      box-shadow: var(--glow);
+    }
+    .logo-text {
+      font-size:1.6rem;
+      font-weight:700;
+      background: var(--primary);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      text-shadow: var(--glow);
+    }
+
+    /* Main content */
+    .main-content {
+      max-width:500px;
+      width:100%;
+      display:flex;
+      flex-direction:column;
+      gap:2rem;
+    }
+
+    .box {
+      background: var(--glass);
+      backdrop-filter: blur(var(--blur));
+      border-radius: var(--radius);
+      padding: 2rem;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: var(--glow);
+      transition: var(--transition);
+    }
+    .box:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 25px rgba(255,90,0,0.8);
+    }
+
+    .box h2 {
+      font-size:1.9rem;
+      background: var(--primary);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      margin-bottom:0.5rem;
+    }
+    .box h5 {
+      color: var(--muted);
+      margin-bottom:1rem;
+    }
+
+    .input-container {
+      display:flex;
+      gap:0.5rem;
+      margin-top:1rem;
+    }
+    .input-container input {
+      flex:1;
+      padding:1rem;
+      border-radius: var(--radius);
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(0,0,0,0.3);
+      color: var(--text);
+    }
+    .input-container button {
+      padding:1rem 1.2rem;
+      background: var(--primary);
+      border:none;
+      border-radius: var(--radius);
+      color:#fff;
+      font-weight:600;
+      cursor:pointer;
+      box-shadow: var(--glow);
+    }
+    .input-container button:hover {
+      transform:scale(1.05);
+    }
+
+    #pair-result {
+      margin-top:1rem;
+      min-height:60px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    #copy-code {
+      display:none;
+      margin-top:1rem;
+      padding:0.7rem 1.5rem;
+      border-radius:50px;
+      border:1px solid var(--highlight);
+      background:rgba(0,0,0,0.4);
+      color:#fff;
+      cursor:pointer;
+    }
+    #copy-code:hover {
+      background:rgba(255,90,0,0.1);
+    }
+
+    /* Footer */
+    footer {
+      margin-top:3rem;
+      text-align:center;
+      font-size:0.85rem;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="background"></div>
+
+  <header class="header">
+    <div class="logo-container">
+      <img src="https://files.catbox.moe/qchzmy.jpg" class="logo-img" alt="logo">
+      <div class="logo-text">Neno-XMD Bot</div>
+    </div>
+    <div class="battery-container">
+      <i class="fas fa-battery-full" id="battery-icon"></i>
+      <span id="battery-level">--%</span>
+    </div>
+  </header>
+
+  <div class="main-content">
+    <div class="box">
+      <h2>Pairing Code</h2>
+      <h5>Connect your WhatsApp with Neno-XMD</h5>
+      <p>Enter your number with country code (e.g +947xxxxxxxx)</p>
+      <div class="input-container">
+        <input type="number" id="number" placeholder="Enter number">
+        <button id="submit">Request</button>
+      </div>
+      <div id="pair-result">
+        <p id="waiting-message" style="display:none;">Please wait...</p>
+      </div>
+      <button id="copy-code" onclick="copyCode()">Copy Code</button>
+    </div>
+  </div>
+
+  <footer>
+    © 2025 Nimeshka Mihiran | Neno-XMD Bot. All rights reserved.
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.0.0-alpha.1/axios.min.js"></script>
+  <script>
+    const pairResult=document.getElementById("pair-result"),
+          submitBtn=document.getElementById("submit"),
+          numberInput=document.getElementById("number"),
+          copyCodeBtn=document.getElementById("copy-code"),
+          waitingMessage=document.getElementById("waiting-message"),
+          batteryLevel=document.getElementById("battery-level"),
+          batteryIcon=document.getElementById("battery-icon");
+
+    async function copyCode(){
+      const code=pairResult.innerText.replace('CODE: ','');
+      try{
+        await navigator.clipboard.writeText(code);
+        copyCodeBtn.innerText="Copied!";
+        setTimeout(()=>{copyCodeBtn.innerText="Copy Code"},2000)
+      }catch(err){console.error('copy failed',err)}
+    }
+
+    submitBtn.addEventListener("click",async e=>{
+      e.preventDefault();
+      if(!numberInput.value){
+        pairResult.innerHTML='<p style="color:#ff5555">Enter number</p>';
+        return
+      }
+      const clean=numberInput.value.replace(/[^0-9]/g,"");
+      if(clean.length<10){
+        pairResult.innerHTML='<p style="color:red">Invalid number</p>';
+        return
+      }
+      waitingMessage.style.display="block";
+      pairResult.innerHTML="";
+      copyCodeBtn.style.display="none";
+      try{
+        const {data}=await axios(`/code?number=${clean}`);
+        const code=data.code||"Unavailable";
+        pairResult.innerHTML=`<p style='color:#ff944d;font-weight:bold'>CODE: <span style='color:white'>${code}</span></p>`;
+        copyCodeBtn.style.display="inline-block";
+        waitingMessage.style.display="none";
+      }catch{
+        pairResult.innerHTML='<p style="color:red">Error fetching code</p>';
+        waitingMessage.style.display="none";
+      }
+    });
+
+    async function updateBattery(){
+      if(navigator.getBattery){
+        const b=await navigator.getBattery();
+        function upd(){
+          const p=Math.round(b.level*100);
+          batteryLevel.textContent=`${p}%`;
+          let icon="fa-battery-empty";
+          if(p>80)icon="fa-battery-full";
+          else if(p>60)icon="fa-battery-three-quarters";
+          else if(p>40)icon="fa-battery-half";
+          else if(p>20)icon="fa-battery-quarter";
+          batteryIcon.className=`fas ${icon}`;
+          batteryIcon.style.color=b.charging?"#ff512f":"#ff944d"
+        }
+        b.addEventListener('levelchange',upd);
+        b.addEventListener('chargingchange',upd);
+        upd();
+      }
+    }
+    updateBattery();
+  </script>
+</body>
+</html>
