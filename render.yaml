@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: neno-web
+    repo: https://github.com/Nimeshkamihiran/NENO_pair_v2.git
+    branch: main
+    env: node
+    plan: starter
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    pullRequestPreviews: true
